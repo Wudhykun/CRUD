@@ -39,7 +39,5 @@ out/
 ### Kotlin ###
 .kotlin
 
-### .env ###
-.env
-
+### Copilot  ###
 COPILOT.md

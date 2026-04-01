@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+<changeSet id="002-create-jobs-table" author="Kun">
+    <createTable tableName="jobs">
+        <column name="id" type="BIGSERIAL">
+            <constraints primaryKey="true" nullable="false"/>
+        </column>
+        <column name="title" type="VARCHAR(255)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="company" type="VARCHAR(255)">
+            <constraints nullable="false"/>
+        </column>
+        <column name="salary" type="NUMERIC(12,2)"/>
+        <column name="location" type="VARCHAR(255)"/>
+        <column name="description" type="TEXT"/>
+        <column name="user_id" type="BIGINT">
+            <constraints nullable="false"/>
+        </column>
+    </createTable>
+
+    <createIndex indexName="idx_jobs_user_id" tableName="jobs">
+        <column name="user_id"/>
+    </createIndex>
+
+    <addForeignKeyConstraint
+            baseTableName="jobs"
+            baseColumnNames="user_id"
+            referencedTableName="users"
+            referencedColumnNames="id"
+            constraintName="fk_jobs_user"
+            onDelete="CASCADE"/>
+</changeSet>
+
+        </databaseChangeLog>
