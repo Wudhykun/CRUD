@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/users")
 class UserController(val userService: UserService) {
-    @PostMapping("/addUser")
+    @PostMapping
     fun addUser(@RequestBody request: AddUserRequest) = userService.addUser(request)
 
     // TODO("update user")
@@ -23,10 +23,10 @@ class UserController(val userService: UserService) {
     fun updateUser(@PathVariable id: Long, @RequestBody request: UpdateUserRequest) = userService.updateUser(id, request)
 
     // TODO("list all users")
-    @GetMapping("/list-users")
+    @GetMapping
     fun listAllUsers() = userService.listAllUsers()
 
     // TODO("delete user")
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     fun deleteUser(@PathVariable id: Long)= userService.deleteUser(id)
 }

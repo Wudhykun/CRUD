@@ -5,6 +5,9 @@ import com.user.crud.dto.request.UpdateUserRequest
 import com.user.crud.dto.response.AddUserResponse
 import com.user.crud.dto.response.DeleteUserResponse
 import com.user.crud.dto.response.ListUserResponse
+import com.user.crud.exception.DuplicateEmailException
+import com.user.crud.exception.DuplicateUsernameException
+import com.user.crud.exception.UserNotFoundException
 import com.user.crud.model.User
 import com.user.crud.repository.UserRepository
 import org.springframework.stereotype.Service
@@ -14,11 +17,11 @@ class UserService(var userRepository: UserRepository) {
     fun addUser(request: AddUserRequest): AddUserResponse {
         // TODO("Business rule: no duplicate username")
         if (userRepository.existsByUsername(request.username)) {
-            throw IllegalArgumentException("Username \"${request.username}\" already exist.")
+            throw DuplicateUsernameException("Username \"${request.username}\" already exist.")
         }
         // TODO("Business rule: no duplicate emails")
         if (userRepository.existsByEmail(request.email))  {
-            throw IllegalArgumentException("Email \"${request.email}\" already exist.")
+            throw DuplicateEmailException("Email \"${request.email}\" already exist.")
         }
 
         val user = User(
@@ -36,14 +39,14 @@ class UserService(var userRepository: UserRepository) {
     }
         // TODO("update user")
     fun updateUser(id: Long, request: UpdateUserRequest): AddUserResponse {
-        val existingUser = userRepository.findById(id).orElseThrow { IllegalArgumentException("User with id $id not found.") }
+        val existingUser = userRepository.findById(id).orElseThrow { UserNotFoundException("User with id $id not found.") }
 
         if (existingUser.username != request.username && userRepository.existsByUsername(request.username)) {
-            throw IllegalArgumentException("Username \"${request.username}\" already exists.")
+            throw DuplicateUsernameException("Username \"${request.username}\" already exists.")
         }
 
         if (existingUser.email != request.email && userRepository.existsByEmail(request.email)) {
-            throw IllegalArgumentException("Email \"${request.email}\" already exist.")
+            throw DuplicateEmailException("Email \"${request.email}\" already exist.")
         }
 
         val updatedUser = User(
@@ -74,7 +77,7 @@ class UserService(var userRepository: UserRepository) {
 
     // TODO("delete user")
     fun deleteUser(id: Long): DeleteUserResponse {
-        val existingUser = userRepository.findById(id).orElseThrow { IllegalArgumentException("User with id $id not found.") }
+        val existingUser = userRepository.findById(id).orElseThrow { UserNotFoundException("User with id $id not found.") }
 
         userRepository.delete(existingUser)
 
