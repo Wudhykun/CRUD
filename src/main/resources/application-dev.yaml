@@ -1,0 +1,5 @@
+app:
+  seed:
+    enabled: true
+    user-count: 5
+    job-count: 10

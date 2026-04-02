@@ -5,8 +5,11 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <include file="db/changelog/changes/001-create-users-table.xml"/>
-    <include file="db/changelog/changes/002-create-jobs-table.xml"/>
-    <include file="db/changelog/changes/003-remove-job-extra-columns.xml"/>
+    <changeSet id="003-remove-job-extra-columns" author="Kun">
+        <dropColumn tableName="jobs" columnName="company"/>
+        <dropColumn tableName="jobs" columnName="salary"/>
+        <dropColumn tableName="jobs" columnName="location"/>
+        <dropColumn tableName="jobs" columnName="description"/>
+    </changeSet>
 
 </databaseChangeLog>
