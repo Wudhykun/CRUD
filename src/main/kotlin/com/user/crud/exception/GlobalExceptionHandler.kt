@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 @RestControllerAdvice
 class GlobalExceptionHandler {
 
-    @ExceptionHandler(UserNotFoundException::class)
+    @ExceptionHandler(UserNotFoundException::class, JobNotFoundException::class)
     fun handleUserNotFound(ex: UserNotFoundException): ResponseEntity<Map<String, String>> {
         return ResponseEntity
             .status(HttpStatus.NOT_FOUND)

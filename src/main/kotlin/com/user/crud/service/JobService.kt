@@ -2,6 +2,7 @@ package com.user.crud.service
 
 import com.user.crud.dto.request.CreateJobRequest
 import com.user.crud.dto.response.JobResponse
+import com.user.crud.exception.JobNotFoundException
 import com.user.crud.exception.UserNotFoundException
 import com.user.crud.model.Job
 import com.user.crud.repository.JobRepository
@@ -41,7 +42,7 @@ class JobService(
 
     fun deleteJob(jobId: Long) {
         val job = jobRepository.findById(jobId)
-            .orElseThrow { UserNotFoundException("Job with id $jobId not found.") }
+            .orElseThrow { JobNotFoundException("Job with id $jobId not found.") }
 
         jobRepository.delete(job)
     }
