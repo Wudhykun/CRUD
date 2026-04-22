@@ -7,6 +7,5 @@
 
     <include file="db/changelog/changes/001-create-users-table.xml"/>
     <include file="db/changelog/changes/002-create-jobs-table.xml"/>
-    <include file="db/changelog/changes/003-remove-job-extra-columns.xml"/>
 
 </databaseChangeLog>

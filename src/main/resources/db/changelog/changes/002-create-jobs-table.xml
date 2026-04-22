@@ -13,12 +13,6 @@
             <column name="title" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="company" type="VARCHAR(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="salary" type="NUMERIC(12,2)"/>
-            <column name="location" type="VARCHAR(255)"/>
-            <column name="description" type="TEXT"/>
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
