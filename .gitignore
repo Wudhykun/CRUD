@@ -41,6 +41,14 @@ out/
 
 ### Copilot  ###
 CLAUDE.md
+curriculum.md
+progress-card.md
 
 ### .env ###
 .env
+
+### macOS ###
+.DS_Store
+
+### Claude memory ###
+memory/

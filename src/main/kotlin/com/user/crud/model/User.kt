@@ -19,11 +19,12 @@ class User(
 
     val username: String,
     val email: String,
-    val password: String,
+    val password: String = "",
 
     @Enumerated(EnumType.STRING)
-    val role: Role,
+    val role: Role = Role.USER,
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     val jobs: List<Job> = emptyList()
+
 )

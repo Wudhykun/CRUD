@@ -1,6 +1,6 @@
 spring:
   application:
-    name: useryl_db
+    name: crud_db
 
   datasource:
     url: ${DB_URL}

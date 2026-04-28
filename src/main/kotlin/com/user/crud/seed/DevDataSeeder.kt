@@ -6,6 +6,7 @@ import com.user.crud.repository.JobRepository
 import com.user.crud.repository.UserRepository
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Profile
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 
 @Component
@@ -13,7 +14,8 @@ import org.springframework.stereotype.Component
 class DevDataSeeder(
     private val userRepository: UserRepository,
     private val jobRepository: JobRepository,
-    private val seedProperties: SeedProperties
+    private val seedProperties: SeedProperties,
+    private val passwordEncoder: PasswordEncoder
 ) : CommandLineRunner {
 
     override fun run(vararg args: String) {
@@ -28,7 +30,8 @@ class DevDataSeeder(
         val users = (1..count).map {
             User(
                 username = "user$it",
-                email = "user$it@example.com"
+                email = "user$it@example.com",
+                password = passwordEncoder.encode("password123")!!
             )
         }
         return userRepository.saveAll(users)
