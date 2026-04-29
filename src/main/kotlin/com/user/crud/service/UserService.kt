@@ -14,6 +14,10 @@ import org.springframework.stereotype.Service
 
 @Service
 class UserService(var userRepository: UserRepository) {
+
+    // TODO("Register new user task")
+    // 1. new Request Payload to enable of registering user with role as `ADMIN` or `USER`
+    // 2. use BCryptPasswordEncoder to hash password and save to db
     fun addUser(request: AddUserRequest): AddUserResponse {
         // TODO("Business rule: no duplicate username")
         if (userRepository.existsByUsername(request.username)) {

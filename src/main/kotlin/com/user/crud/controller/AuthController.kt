@@ -16,6 +16,15 @@ class AuthController(private val authenticationManager: AuthenticationManager, p
 
     @PostMapping("/login")
     fun login(@RequestBody request: LoginRequest): LoginResponse {
+        // TODO("Let's not use AuthenticationManager")
+        /**
+         * 1. check user existed by username through UserRepository, throw error if not not found
+         * 2. use BCryptPasswordEncoder to validate password is match, throw error if not matched
+         * 3. existed user with matched password, generate token and response
+         * By removing AuthenticationManager:
+         *      - full control
+         *      - no framework dependency
+         * */
         val auth = authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(request.username, request.password)
         )

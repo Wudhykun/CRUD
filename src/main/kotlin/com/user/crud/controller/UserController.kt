@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/users")
 class UserController(val userService: UserService) {
+    // TODO("Move to AuthController as new register API")
     @PostMapping
     fun addUser(@RequestBody request: AddUserRequest) = userService.addUser(request)
 
