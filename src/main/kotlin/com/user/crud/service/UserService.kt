@@ -19,11 +19,11 @@ class UserService(var userRepository: UserRepository) {
     // 1. new Request Payload to enable of registering user with role as `ADMIN` or `USER`
     // 2. use BCryptPasswordEncoder to hash password and save to db
     fun addUser(request: AddUserRequest): AddUserResponse {
-        // TODO("Business rule: no duplicate username")
+
         if (userRepository.existsByUsername(request.username)) {
             throw DuplicateUsernameException("Username \"${request.username}\" already exist.")
         }
-        // TODO("Business rule: no duplicate emails")
+
         if (userRepository.existsByEmail(request.email))  {
             throw DuplicateEmailException("Email \"${request.email}\" already exist.")
         }
@@ -41,7 +41,7 @@ class UserService(var userRepository: UserRepository) {
             email = savedUser.email
         )
     }
-        // TODO("update user")
+
     fun updateUser(id: Long, request: UpdateUserRequest): AddUserResponse {
         val existingUser = userRepository.findById(id).orElseThrow { UserNotFoundException("User with id $id not found.") }
 
@@ -68,7 +68,6 @@ class UserService(var userRepository: UserRepository) {
         )
     }
 
-        // TODO("list all users")
     fun listAllUsers(): List<ListUserResponse> {
         val users = userRepository.findAll()
 
@@ -79,7 +78,6 @@ class UserService(var userRepository: UserRepository) {
         ) }
     }
 
-    // TODO("delete user")
     fun deleteUser(id: Long): DeleteUserResponse {
         val existingUser = userRepository.findById(id).orElseThrow { UserNotFoundException("User with id $id not found.") }
 
