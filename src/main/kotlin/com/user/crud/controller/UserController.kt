@@ -19,15 +19,12 @@ class UserController(val userService: UserService) {
     @PostMapping
     fun addUser(@RequestBody request: AddUserRequest) = userService.addUser(request)
 
-    // TODO("update user")
     @PutMapping("/{id}")
     fun updateUser(@PathVariable id: Long, @RequestBody request: UpdateUserRequest) = userService.updateUser(id, request)
 
-    // TODO("list all users")
     @GetMapping
     fun listAllUsers() = userService.listAllUsers()
 
-    // TODO("delete user")
     @DeleteMapping("/{id}")
     fun deleteUser(@PathVariable id: Long)= userService.deleteUser(id)
 }
