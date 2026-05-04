@@ -19,8 +19,7 @@ class User(
 
     val username: String,
     val email: String,
-    // TODO("Let's not having default value for password")
-    val password: String = "",
+    val password: String,
 
     @Enumerated(EnumType.STRING)
     val role: Role = Role.USER,
