@@ -10,23 +10,32 @@ import com.user.crud.exception.DuplicateUsernameException
 import com.user.crud.exception.UserNotFoundException
 import com.user.crud.model.User
 import com.user.crud.repository.UserRepository
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
-class UserService(var userRepository: UserRepository) {
+class UserService(
+    private val userRepository: UserRepository,
+    private val passwordEncoder: PasswordEncoder) {
+
     fun addUser(request: AddUserRequest): AddUserResponse {
-        // TODO("Business rule: no duplicate username")
+
         if (userRepository.existsByUsername(request.username)) {
             throw DuplicateUsernameException("Username \"${request.username}\" already exist.")
         }
-        // TODO("Business rule: no duplicate emails")
+
         if (userRepository.existsByEmail(request.email))  {
             throw DuplicateEmailException("Email \"${request.email}\" already exist.")
         }
 
+        val hashedPassword = passwordEncoder.encode(request.password)!!
+
         val user = User(
             username = request.username,
-            email = request.email
+            email = request.email,
+            password = hashedPassword,
+            role = request.role,
+            jobs = emptyList()
         )
 
         val savedUser = userRepository.save(user)
@@ -34,10 +43,11 @@ class UserService(var userRepository: UserRepository) {
         return AddUserResponse(
             id = savedUser.id,
             username = savedUser.username,
-            email = savedUser.email
+            email = savedUser.email,
+            role = savedUser.role,
         )
     }
-        // TODO("update user")
+
     fun updateUser(id: Long, request: UpdateUserRequest): AddUserResponse {
         val existingUser = userRepository.findById(id).orElseThrow { UserNotFoundException("User with id $id not found.") }
 
@@ -52,7 +62,10 @@ class UserService(var userRepository: UserRepository) {
         val updatedUser = User(
             id = existingUser.id,
             username = request.username,
-            email = request.email
+            email = request.email,
+            password = existingUser.password,
+            role = existingUser.role,
+
         )
 
         val savedUser = userRepository.save(updatedUser)
@@ -60,11 +73,11 @@ class UserService(var userRepository: UserRepository) {
         return AddUserResponse(
             id = savedUser.id,
             username= savedUser.username,
-            email= savedUser.email
+            email= savedUser.email,
+            role = savedUser.role,
         )
     }
 
-        // TODO("list all users")
     fun listAllUsers(): List<ListUserResponse> {
         val users = userRepository.findAll()
 
@@ -75,7 +88,6 @@ class UserService(var userRepository: UserRepository) {
         ) }
     }
 
-    // TODO("delete user")
     fun deleteUser(id: Long): DeleteUserResponse {
         val existingUser = userRepository.findById(id).orElseThrow { UserNotFoundException("User with id $id not found.") }
 

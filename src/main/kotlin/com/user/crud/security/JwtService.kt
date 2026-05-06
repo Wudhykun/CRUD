@@ -1,40 +1,58 @@
 package com.user.crud.security
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.util.Date
 
 @Service
-class JwtService {
+class JwtService(
 
     @Value("\${app.jwt.secret}")
-    private lateinit var secret: String
+    private val secret: String,
 
     @Value("\${app.jwt.expiration-ms}")
-    private lateinit var expirationMs: String
+    private val expirationMs: String
 
+) {
 
-    // for login
-    fun generateToken(username: String, role: String): String {
+    private val objectMapper = ObjectMapper().registerModules(KotlinModule.Builder().build())
 
-        val key = Keys.hmacShaKeyFor(secret.toByteArray())
+    private val signingKey =
+        Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret))
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class UserAuth(
+        var userId: Long? = null,
+        var roles: Set<String>
+    )
+
+    fun generateToken(username: String, user: UserAuth): String {
         return Jwts.builder()
             .subject(username)
-            .claim("role", role)
+            .claim("payload", user)
             .issuedAt(Date())
             .expiration(Date(System.currentTimeMillis() + expirationMs.toLong()))
-            .signWith(key)
+            .signWith(signingKey)
             .compact()
     }
 
-    // for endpoints authentication
-    fun extractUsername(token: String): String {
+    fun getUserAuth(token: String): UserAuth {
+        val claimsPayload = Jwts.parser().verifyWith(signingKey)
+            .build()
+            .parseSignedClaims(token)
+            .payload["payload"]
+        return objectMapper.convertValue(claimsPayload, UserAuth::class.java)
+    }
 
-        val key = Keys.hmacShaKeyFor(secret.toByteArray())
+    fun extractUsername(token: String): String {
         return Jwts.parser()
-            .verifyWith(key)
+            .verifyWith(signingKey)
             .build()
             .parseSignedClaims(token)
             .payload
@@ -43,9 +61,8 @@ class JwtService {
 
     fun isTokenValid(token: String): Boolean {
         return try {
-            val key = Keys.hmacShaKeyFor(secret.toByteArray())
             val expiration = Jwts.parser()
-                .verifyWith(key)
+                .verifyWith(signingKey)
                 .build()
                 .parseSignedClaims(token)
                 .payload

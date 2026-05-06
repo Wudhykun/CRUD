@@ -6,10 +6,9 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface UserRepository : JpaRepository<User, Long> {
-    // TODO("Business rule: no duplicate emails")
+
     fun existsByUsername(username: String): Boolean
 
-    // TODO("check existed user by email")
     fun existsByEmail(email: String): Boolean
 
     fun findByUsername(username: String): User?

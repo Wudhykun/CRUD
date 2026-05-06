@@ -32,7 +32,4 @@ class SecurityConfig(private val jwtAuthFilter: JwtAuthFilter) {
 
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
-
-    @Bean
-    fun authenticationManager(authConfig: AuthenticationConfiguration): AuthenticationManager = authConfig.authenticationManager
 }

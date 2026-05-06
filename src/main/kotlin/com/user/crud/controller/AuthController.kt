@@ -1,10 +1,14 @@
 package com.user.crud.controller
 
+import com.user.crud.dto.request.AddUserRequest
 import com.user.crud.dto.request.LoginRequest
 import com.user.crud.dto.response.LoginResponse
+import com.user.crud.exception.UserNotFoundException
+import com.user.crud.repository.UserRepository
 import com.user.crud.security.JwtService
-import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import com.user.crud.service.UserService
+import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -12,15 +16,30 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/auth")
-class AuthController(private val authenticationManager: AuthenticationManager, private  val jwtService: JwtService) {
+class AuthController(
+    private val userRepository: UserRepository,
+    private val passwordEncoder: PasswordEncoder,
+    private val jwtService: JwtService,
+    private val userService: UserService,
+) {
 
     @PostMapping("/login")
     fun login(@RequestBody request: LoginRequest): LoginResponse {
-        val auth = authenticationManager.authenticate(
-            UsernamePasswordAuthenticationToken(request.username, request.password)
-        )
 
-        val token = jwtService.generateToken(auth.name, auth.authorities.first().authority ?: "ROLE_USER")
+        val user = userRepository.findByUsername(request.username)
+            ?: throw UserNotFoundException("User ${request.username} not found")
+
+        if (!passwordEncoder.matches(request.password, user.password)) {
+            throw BadCredentialsException("Invalid password")
+        }
+
+        val userAuth = JwtService.UserAuth(userId = user.id, roles = setOf(user.role.name))
+
+        val token = jwtService.generateToken(user.username, userAuth)
+
         return LoginResponse(token)
     }
+
+    @PostMapping("/register")
+    fun addUser(@RequestBody request: AddUserRequest) = userService.addUser(request)
 }
