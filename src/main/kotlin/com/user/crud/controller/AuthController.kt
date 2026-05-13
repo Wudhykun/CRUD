@@ -7,6 +7,7 @@ import com.user.crud.exception.UserNotFoundException
 import com.user.crud.repository.UserRepository
 import com.user.crud.security.JwtService
 import com.user.crud.service.UserService
+import jakarta.validation.Valid
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.PostMapping
@@ -41,5 +42,5 @@ class AuthController(
     }
 
     @PostMapping("/register")
-    fun addUser(@RequestBody request: AddUserRequest) = userService.addUser(request)
+    fun addUser(@RequestBody @Valid request: AddUserRequest) = userService.addUser(request)
 }
