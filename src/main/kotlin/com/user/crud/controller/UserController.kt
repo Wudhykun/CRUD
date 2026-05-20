@@ -29,11 +29,7 @@ class UserController(val userService: UserService) {
     @Operation(summary = "Update user", description = "Updates username, email, or role for the given user ID.")
     fun updateUser(@PathVariable id: Long, @RequestBody @Valid request: UpdateUserRequest) = userService.updateUser(id, request)
 
-    @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "Success"),
-        ApiResponse(responseCode = "400", description = "Bad request"),
-        ApiResponse(responseCode = "404", description = "User not found"),
-    ])
+    @ApiResponses(value = [ApiResponse(responseCode = "200", description = "Success")])
     @GetMapping
     @Operation(summary = "List all users", description = "Returns all registered users")
     fun listAllUsers() = userService.listAllUsers()
