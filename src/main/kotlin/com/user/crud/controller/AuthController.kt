@@ -7,6 +7,10 @@ import com.user.crud.exception.UserNotFoundException
 import com.user.crud.repository.UserRepository
 import com.user.crud.security.JwtService
 import com.user.crud.service.UserService
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Authentication", description = "Register and login")
 class AuthController(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
@@ -24,7 +29,13 @@ class AuthController(
     private val userService: UserService,
 ) {
 
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "Success"),
+        ApiResponse(responseCode = "400", description = "Bad request"),
+        ApiResponse(responseCode = "404", description = "User not found"),
+    ])
     @PostMapping("/login")
+    @Operation(summary = "Login", description = "Authenticates a user and returns a JWT token.")
     fun login(@RequestBody request: LoginRequest): LoginResponse {
 
         val user = userRepository.findByUsername(request.username)
@@ -41,6 +52,12 @@ class AuthController(
         return LoginResponse(token)
     }
 
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "Success"),
+        ApiResponse(responseCode = "400", description = "Bad request"),
+        ApiResponse(responseCode = "409", description = "Duplicate user"),
+    ])
     @PostMapping("/register")
+    @Operation(summary = "Register", description = "Create a new user account.")
     fun addUser(@RequestBody @Valid request: AddUserRequest) = userService.addUser(request)
 }
